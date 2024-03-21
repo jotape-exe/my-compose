@@ -63,5 +63,9 @@ val md_theme_dark_surfaceTint = Color(0xFFB3C5FF)
 val md_theme_dark_outlineVariant = Color(0xFF45464F)
 val md_theme_dark_scrim = Color(0xFF000000)
 
+val jsx_btn_container = Color(0xFF000000)
+val jsx_btn_content = Color(0xFFFFFFFF)
+val jsx_btn_container_dark = Color(0xFFFFFFFF)
+val jsx_btn_content_dark = Color(0xFF000000)
 
 val seed = Color(0xFF004EC6)

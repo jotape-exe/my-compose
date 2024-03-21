@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">JXS Componse</string>
+    <string name="title_activity_codelab_compose">CodelabCompose</string>
 </resources>

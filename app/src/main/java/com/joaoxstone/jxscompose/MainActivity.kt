@@ -1,5 +1,6 @@
 package com.joaoxstone.jxscompose
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -8,6 +9,7 @@ import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -22,6 +24,7 @@ import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ButtonElevation
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -43,6 +46,9 @@ import androidx.compose.ui.unit.sp
 import com.example.compose.JXSComposeTheme
 
 class MainActivity : ComponentActivity() {
+
+    val lista = listOf(CardData("CodeLab Compose", "Conteudo que estou aprendendo no codelab da google sobre Jetpack Compose", CodelabCompose::class.java))
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -57,7 +63,7 @@ class MainActivity : ComponentActivity() {
                             .fillMaxSize()
                     ) {
                         items(lista) { item ->
-                            JXSCard(title = item.title)
+                            JXSCard(title = item.title, description = item.description,  activity = item.activity)
                         }
                     }
                 }
@@ -65,16 +71,16 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    val lista = listOf(CardData("Button"), CardData("Card"), CardData("Text"), CardData("FAB"))
 
     @Composable
-    fun JXSButton() {
+    fun JXSButton(onClick: () -> Unit) {
         Button(
-            onClick = { println("OBA") },
+            elevation = ButtonDefaults.buttonElevation(defaultElevation = 6.dp, pressedElevation = 8.dp),
+            onClick = { onClick() },
             shape = RoundedCornerShape(12.dp),
             colors = ButtonDefaults.buttonColors(
-                containerColor = Color.Black,
-                contentColor = Color.White
+                containerColor = if(isSystemInDarkTheme()) Color.White else Color.Black,
+                contentColor = if(isSystemInDarkTheme()) Color.Black else Color.White
             )
         ) {
             Icon(Icons.Default.KeyboardArrowRight, contentDescription = "next")
@@ -82,11 +88,9 @@ class MainActivity : ComponentActivity() {
     }
 
     @Composable
-    fun JXSCard(title: String) {
+    fun JXSCard(title: String, description: String, activity: Class<*>) {
         //rememberSaveable usado em mudanças de config: Tema, Orientação de tela...
         var isExpanded by rememberSaveable { mutableStateOf(false) }
-        val text =
-            "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged."
         Card(
             modifier = Modifier
                 .padding(4.dp)
@@ -120,17 +124,25 @@ class MainActivity : ComponentActivity() {
                     }
                 }
                 if (isExpanded) {
-                    Text(text = text, modifier = Modifier.padding(8.dp))
+                Column(modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp), horizontalAlignment = Alignment.End) {
+
+                        Text(text = description, modifier = Modifier.padding(8.dp))
+                        JXSButton(onClick = {
+                            val intent = Intent(applicationContext, activity)
+                            startActivity(intent)
+                            //finish()
+                        })
+
                 }
-
-
+                }
             }
-
         }
 
     }
 }
 
 
-data class CardData(val title: String)
+data class CardData(val title: String, val description: String, val activity: Class<*>)
 
