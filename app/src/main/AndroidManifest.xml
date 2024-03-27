@@ -13,6 +13,11 @@
         android:theme="@style/Theme.JXSComponse"
         tools:targetApi="31">
         <activity
+            android:name=".StateCodelab"
+            android:exported="false"
+            android:label="@string/title_activity_state_codelab"
+            android:theme="@style/Theme.JXSComponse" />
+        <activity
             android:name=".CodelabCompose"
             android:exported="false"
             android:label="@string/title_activity_codelab_compose"

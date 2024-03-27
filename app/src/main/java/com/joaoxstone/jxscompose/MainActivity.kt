@@ -4,12 +4,10 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -18,13 +16,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.KeyboardArrowRight
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ButtonElevation
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -34,20 +28,29 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.compose.JXSComposeTheme
 
 class MainActivity : ComponentActivity() {
 
-    val lista = listOf(CardData("CodeLab Compose", "Conteudo que estou aprendendo no codelab da google sobre Jetpack Compose", CodelabCompose::class.java))
+    val lista = listOf(
+        CardData(
+            "CodeLab Compose",
+            "Conteúdo que estou aprendendo no codelab da google sobre Jetpack Compose",
+            CodelabCompose::class.java
+        ),
+        CardData(
+            "CodeLab State Compose",
+            "Aprendendo a gerenciar o estado da aplicação com Jetpack Compose (ViewModel e State<>)",
+            StateCodelab::class.java
+        )
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,7 +66,11 @@ class MainActivity : ComponentActivity() {
                             .fillMaxSize()
                     ) {
                         items(lista) { item ->
-                            JXSCard(title = item.title, description = item.description,  activity = item.activity)
+                            JXSCard(
+                                title = item.title,
+                                description = item.description,
+                                activity = item.activity
+                            )
                         }
                     }
                 }
@@ -71,21 +78,6 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-
-    @Composable
-    fun JXSButton(onClick: () -> Unit) {
-        Button(
-            elevation = ButtonDefaults.buttonElevation(defaultElevation = 6.dp, pressedElevation = 8.dp),
-            onClick = { onClick() },
-            shape = RoundedCornerShape(12.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = if(isSystemInDarkTheme()) Color.White else Color.Black,
-                contentColor = if(isSystemInDarkTheme()) Color.Black else Color.White
-            )
-        ) {
-            Icon(Icons.Default.KeyboardArrowRight, contentDescription = "next")
-        }
-    }
 
     @Composable
     fun JXSCard(title: String, description: String, activity: Class<*>) {
@@ -124,18 +116,20 @@ class MainActivity : ComponentActivity() {
                     }
                 }
                 if (isExpanded) {
-                Column(modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(8.dp), horizontalAlignment = Alignment.End) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(8.dp), horizontalAlignment = Alignment.End
+                    ) {
 
                         Text(text = description, modifier = Modifier.padding(8.dp))
                         JXSButton(onClick = {
                             val intent = Intent(applicationContext, activity)
                             startActivity(intent)
                             //finish()
-                        })
+                        }, icon = Icons.AutoMirrored.Filled.KeyboardArrowRight)
 
-                }
+                    }
                 }
             }
         }
