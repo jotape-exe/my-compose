@@ -49,6 +49,11 @@ class MainActivity : ComponentActivity() {
             "CodeLab State Compose",
             "Aprendendo a gerenciar o estado da aplicação com Jetpack Compose (ViewModel e State<>)",
             StateCodelab::class.java
+        ),
+        CardData(
+            "CodeLab State Compose: View Model",
+            "Refatorando o codelab de estado utilizando ViewModel",
+            StateVMCodelab::class.java
         )
     )
 

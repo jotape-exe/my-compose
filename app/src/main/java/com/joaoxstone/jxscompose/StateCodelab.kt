@@ -16,8 +16,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.Add
@@ -41,6 +39,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontStyle
@@ -97,7 +96,7 @@ class StateCodelab : ComponentActivity() {
                             listOf("Uma prática recomendada para o design de Composables é passar a eles apenas os parâmetros necessários.")
                         )
                         Spacer(modifier = Modifier.padding(16.dp))
-                        WellnessTasksList()
+                        TelaPrincipal()
                     }
                 }
             }
@@ -203,14 +202,14 @@ fun TipCard(title: String, content: List<String>) {
 }
 
 @Composable
-fun WellnessTaskItem(taskName: String, modifier: Modifier = Modifier) {
+fun WellnessTaskItem(taskName: String, onClose: ()-> Unit, modifier: Modifier = Modifier) {
     var checkedState by rememberSaveable { mutableStateOf(false) }
 
     WellnessTaskItem(
         taskName = taskName,
         checked = checkedState,
         onCheckedChange = { newValue -> checkedState = newValue },
-        onClose = {},
+        onClose = { onClose() },
         modifier = modifier,
     )
 }
@@ -243,19 +242,29 @@ fun WellnessTaskItem(
 }
 
 data class WellnessTask(val id: Int, val label: String)
-
-fun getWellnessTasks() = List(30) { i -> WellnessTask(i, "Task # $i") }
+private fun getWellnessTasks() = List(30) { i -> WellnessTask(i, "Task # $i") }
 
 @Composable
 fun WellnessTasksList(
-    modifier: Modifier = Modifier,
-    list: List<WellnessTask> = remember { getWellnessTasks() }
+    list: List<WellnessTask>,
+    onCloseTask: (WellnessTask) -> Unit,
+    modifier: Modifier = Modifier
 ) {
-    LazyColumn(
-        modifier = modifier
-    ) {
-        items(list) { task ->
-            WellnessTaskItem(taskName = task.label)
+    Text(text = "Lista utilizando estado", modifier = Modifier.padding(16.dp), fontSize = 20.sp)
+    LazyColumn(modifier = modifier) {
+        items(
+            items = list,
+            key = { task -> task.id }
+        ) { task ->
+            WellnessTaskItem(taskName = task.label, onClose = { onCloseTask(task) })
         }
+    }
+}
+
+@Composable
+fun TelaPrincipal(modifier: Modifier = Modifier){
+    Column(modifier = modifier) {
+        val list = remember { getWellnessTasks().toMutableStateList() }
+        WellnessTasksList(list = list, onCloseTask = { task -> list.remove(task) })
     }
 }
